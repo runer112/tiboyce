@@ -3596,7 +3596,7 @@ _
 	ld hl,-160*240
 	ld (frame_dma_size_smc),hl
 	
-	call do_scale
+	call do_scale_fill
 	
 	APTR(lcdSettings8BitStretched)
 	ACALL(SetLcdSettingsFirstBuffer)

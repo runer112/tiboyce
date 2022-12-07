@@ -124,7 +124,6 @@ _
 	
 	 ; Scaling type
 	 call read_config_item
-	 inc a
 	 ld (active_scaling_type),a
 	 ; Message display
 	 inc ix
@@ -1497,7 +1496,7 @@ GraphicsMenu:
 	.db ITEM_OPTION
 	.db ScalingType-OptionConfig
 	.db 65,0
-	.db "Scaling type: %-9s",0
+	.db "Scaling type: %-10s",0
 
 	.db "Display a skin in \"no scaling\" mode.\nRequires the TIBoySkn.8xv AppVar.",0
 	.db ITEM_OPTION
@@ -1756,8 +1755,8 @@ OptionScalingType:
 	.db 4
 	.db "static",0
 	.db "scrolling",0
-	.db "2-phase",0
-	.db "3-phase",0
+	.db "scrolling2",0
+	.db "scrolling3",0
 	
 OptionPaletteSelection:
 	.db 14
