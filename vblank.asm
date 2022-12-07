@@ -707,12 +707,14 @@ scale_offset:
 	ret c
 	djnz _
 scale_offset_1_loop:
+; 1 = 2
 	lea de,ix
 	ld c,e
 	add hl,de
 	ex de,hl
 	add hl,de
 	ldir
+; 3 = 4
 	ex de,hl
 	lea hl,ix
 	ld c,l
@@ -725,11 +727,13 @@ _
 	djnz _
 	lea de,ix
 scale_offset_2_loop:
+; 1 = 0
 	ld c,e
 	ex de,hl
 	add hl,de
 	ex de,hl
 	ldir
+; 3 = 2
 	lea hl,ix
 	ld c,l
 	add hl,de
@@ -744,12 +748,14 @@ scale_offset_2_loop:
 _
 	ld b,0
 scale_offset_0_loop:
+; 1 = 0
 	ex de,hl
 	lea hl,ix
 	ld c,l
 	add hl,de
 	ex de,hl
 	ldir
+; 3 = 4
 	lea hl,ix
 	ld c,l
 	ex de,hl
