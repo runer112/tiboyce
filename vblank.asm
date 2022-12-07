@@ -646,18 +646,27 @@ convert_palette_row_smc_3 = $+1
 	ret
 	
 do_scale_fill:
-	ld hl,(current_display)
-	ld ix,160
 active_scaling_type = $+1
-	ld b,0
-	djnz do_scale_full
-	ld a,(hram_base+SCY)
+	ld a,0
+	or a
+	jr z,do_scale_full
+	rra
+	jr c,_
+last_scale_offset_2 = $+1
+	ld a,1
+	xor a,3
+	ld (last_scale_offset_2),a
+_
+	ld b,a
+	ld hl,hram_base+SCY
+	ld a,(hl)
 last_frame_scy = $+1
-	ld b,0
+	ld c,0
 	ld (last_frame_scy),a
+	sub c
+	sub b
 last_scale_offset = $+1
 	add a,0
-	sub b
 	jp m,++_
 _
 	sub 3
@@ -667,16 +676,20 @@ _
 	jr nc,-_
 	ld (last_scale_offset),a
 	ld b,a
-	ld a,(hram_base+LCDC)
+	ld l,LCDC & $FF
+	ld a,(hl)
 	and $20
 	jr z,do_scale_full
-	ld a,(hram_base+WY)
+	ld l,WY & $FF
+	ld a,(hl)
 	dec a
 	cp 143
 	jr c,_
 do_scale_full:
 	ld a,143
 _
+	ld hl,(current_display)
+	ld ix,160
 	inc a
 	push af
 	 cpl
