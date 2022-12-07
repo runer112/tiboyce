@@ -126,7 +126,7 @@ NoSpeedDisplay:
 	    call do_frame_flip
 	    ld a,(active_scaling_mode)
 	    or a
-	    call nz,do_scale_fill
+	    call nz,do_scale
 	    call sync_frame_flip
 	
 	    xor a
@@ -644,28 +644,36 @@ convert_palette_row_smc_3 = $+1
 	dec c
 	jr nz,-_
 	ret
-	
-do_scale_fill:
-active_scaling_type = $+1
+
+do_scale_phase:
+last_phase_offset = $+1
 	ld a,0
-	or a
-	jr z,do_scale_full
-	rra
-	jr c,_
-last_scale_offset_2 = $+1
-	ld a,1
-	xor a,3
-	ld (last_scale_offset_2),a
+	djnz _
+	and 1
 _
+	inc a
+	cp 3
+	jr c,_
+	xor a
+_
+	ld (last_phase_offset),a
 	ld b,a
+	jr do_scale_full
+
+do_scale:
+active_scaling_type = $+1
+	ld b,1
+	dec b
+	jr z,do_scale_full
+	djnz do_scale_phase
+do_scale_scrolling:
 	ld hl,hram_base+SCY
 	ld a,(hl)
 last_frame_scy = $+1
-	ld c,0
+	ld b,0
 	ld (last_frame_scy),a
-	sub c
 	sub b
-last_scale_offset = $+1
+last_scrolling_offset = $+1
 	add a,0
 	jp m,++_
 _
@@ -674,7 +682,7 @@ _
 _
 	add a,3
 	jr nc,-_
-	ld (last_scale_offset),a
+	ld (last_scrolling_offset),a
 	ld b,a
 	ld l,LCDC & $FF
 	ld a,(hl)
@@ -684,10 +692,10 @@ _
 	ld a,(hl)
 	dec a
 	cp 143
-	jr c,_
+	jr c,do_scale_fill
 do_scale_full:
 	ld a,143
-_
+do_scale_fill:
 	ld hl,(current_display)
 	ld ix,160
 	inc a
